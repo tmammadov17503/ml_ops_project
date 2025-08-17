@@ -1,0 +1,31 @@
+[project]
+name = "ml_ops_project"
+version = "0.1.0"
+description = "Homework project using uv + cookiecutter (EDA, FE1/2, Model Selection)"
+readme = "README.md"
+requires-python = ">= 3.12"
+authors = [{ name = "tmammadov17503", email = "tmammadov17503@ada.edu.az" }]
+dependencies = [
+    "black>=25.1.0",
+    "isort>=6.0.1",
+    "joblib>=1.5.1",
+    "matplotlib>=3.10.5",
+    "numpy>=2.3.2",
+    # runtime deps go here, e.g. "pandas>=2.2"
+    "pandas>=2.3.1",
+    "ruff>=0.12.9",
+    "scikit-learn>=1.7.1",
+    "seaborn>=0.13.2",
+]
+
+# [tool.ruff]
+# lint.extend-select = ["ALL"]
+
+[tool.black]
+line-length = 100
+extend-exclude = '^(data|reports|models|notebooks)/'
+
+[tool.isort]
+profile = "black" # keeps isort compatible with Black
+line_length = 100
+skip_glob = ["data/**", "reports/**", "models/**", "notebooks/**"]
