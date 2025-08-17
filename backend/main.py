@@ -1,10 +1,11 @@
 import os
 from typing import List, Literal
+
+import pandas as pd
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel
-import pandas as pd
 from joblib import load
+from pydantic import BaseModel
 
 MODEL_PATH = os.environ.get("MODEL_PATH", "models/model.joblib")
 
