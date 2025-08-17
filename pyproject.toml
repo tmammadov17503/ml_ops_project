@@ -20,3 +20,10 @@ extend-exclude = "notebooks/"
 [tool.isort]
 profile = "black"
 skip_glob = ["notebooks/*"]
+
+[dependency-groups]
+dev = [
+    "black>=25.1.0",
+    "isort>=6.0.1",
+    "ruff>=0.12.9",
+]
