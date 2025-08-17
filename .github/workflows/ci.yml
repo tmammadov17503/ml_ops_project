@@ -1,13 +1,14 @@
 name: CI
 on: [push, pull_request]
+
 jobs:
   ci:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: astral-sh/setup-uv@v3
-      - run: uv sync
+      - run: uv sync --all-extras
       - run: uv run ruff check .
       - run: uv run isort . --check-only --profile black
       - run: uv run black . --check
-      - run: uv run pytest --maxfail=1 --disable-warnings --cov=src -q
+      - run: uv run pytest -q --disable-warnings --maxfail=1

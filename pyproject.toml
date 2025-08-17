@@ -22,3 +22,6 @@ extend-exclude = "notebooks/"
 [tool.isort]
 profile = "black"
 skip_glob = ["notebooks/*"]
+
+[project.optional-dependencies]
+dev = ["ruff", "isort", "black", "pytest", "pytest-cov"]
