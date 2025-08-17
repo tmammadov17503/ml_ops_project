@@ -29,3 +29,18 @@ extend-exclude = '^(data|reports|models|notebooks)/'
 profile = "black" # keeps isort compatible with Black
 line_length = 100
 skip_glob = ["data/**", "reports/**", "models/**", "notebooks/**"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+extend-select = ["I"]
+exclude = ["notebooks/**"]
+
+[tool.black]
+line-length = 100
+target-version = ["py311"]
+extend-exclude = "notebooks/"
+
+[tool.isort]
+profile = "black"
+skip_glob = ["notebooks/*"]
