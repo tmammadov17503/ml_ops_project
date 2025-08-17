@@ -1,5 +1,7 @@
 import pandas as pd
+
 from ml_ops_project.fe import build_preprocess
+
 
 def test_build_preprocess_fit_transform():
     df = pd.DataFrame({"f1": [1.0, 2.0, 3.0], "city": ["a", "b", "a"]})

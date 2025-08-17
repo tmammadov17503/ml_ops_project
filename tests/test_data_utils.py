@@ -1,5 +1,7 @@
-from ml_ops_project.data_utils import load_csv
 import pandas as pd
+
+from ml_ops_project.data_utils import load_csv
+
 
 def test_load_csv(tmp_path):
     csv_data = "a,b\n1,2\n3,4\n"
