@@ -9,16 +9,7 @@ from pydantic import BaseModel
 
 MODEL_PATH = os.environ.get("MODEL_PATH", "models/model.joblib")
 
-app = FastAPI(title="MLOps HW2 - Backend", version="0.1.0")
-
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
-
+# Lazy model loader (so the module can import even if model file is not present yet)
 _model = None
 
 
@@ -29,23 +20,53 @@ def get_model():
     return _model
 
 
+app = FastAPI(title="ML Backend")
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+
+# --------- Schemas ---------
 class Row(BaseModel):
     f1: float
     f2: float
     city: Literal["a", "b", "c"]
 
 
-class PredictRequest(BaseModel):
+class PredictIn(BaseModel):
     rows: List[Row]
+
+    class Config:
+        json_schema_extra = {
+            "example": {
+                "rows": [
+                    {"f1": 1.1, "f2": 11, "city": "a"},
+                    {"f1": 2.0, "f2": 17, "city": "c"},
+                ]
+            }
+        }
+
+
+class PredictOut(BaseModel):
+    predictions: List[int]
+    n: int
+
+
+# ---------------------------
 
 
 @app.get("/health")
-def health():
+def health() -> dict:
     return {"status": "ok"}
 
 
-@app.post("/predict")
-def predict(req: PredictRequest):
-    df = pd.DataFrame([r.model_dump() for r in req.rows])
+@app.post("/predict", response_model=PredictOut)
+def predict(body: PredictIn) -> PredictOut:
+    df = pd.DataFrame([r.model_dump() for r in body.rows])
     preds = get_model().predict(df).tolist()
-    return {"predictions": preds, "n": len(preds)}
+    return PredictOut(predictions=preds, n=len(preds))
