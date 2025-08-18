@@ -55,13 +55,10 @@ Homework project using uv + cookiecutter (EDA, FE1/2, Model Selection)
 
 ## Getting started (uv)
 ```bash
-# create venv and sync (will create uv.lock)
 uv sync
 
-# add a runtime dependency
 uv add numpy
 
-# run code
 uv run python -m src.models.train_model
 ```
 
@@ -70,19 +67,15 @@ uv run python -m src.models.train_model
 
 #### Lint (no changes)
 ```bash
-# Lint entire repo
 uvx ruff check .
 ```
 
 #### Auto-fix
 ```bash
-# 1) Sort imports
 uvx isort .
 
-# 2) Format code
 uvx black .
 
-# 3) Apply Ruff’s safe fixes (entire repo)
 uvx ruff check --fix .
 ```
 > Also remove unused imports/variables:
@@ -90,3 +83,88 @@ uvx ruff check --fix .
 > uvx ruff check --fix --unsafe-fixes .
 > ```
 
+# ML Ops Project HW 2 Continue
+
+End-to-end ML service with **FastAPI** (backend) + **Streamlit** (frontend), containerized with **Docker** and deployed on **AWS EC2** via a GitHub Actions **self-hosted runner**.  
+
+---
+
+## Live Deployment  
+
+- **Frontend (Streamlit):** [http://13.223.221.154:8501](http://13.223.221.154:8501)  
+- **Backend (FastAPI Docs):** [http://13.223.221.154:8000/docs](http://13.223.221.154:8000/docs)  
+
+---
+
+## Features  
+
+- **Backend (FastAPI)**  
+  - `/health` endpoint → returns service status.  
+  - `/predict` endpoint → accepts structured JSON input, returns predictions.  
+
+- **Frontend (Streamlit)**  
+  - Simple UI for submitting `f1`, `f2`, and `city`.  
+  - Displays prediction from the backend.  
+
+- **DevOps**  
+  - Docker Compose orchestrates backend + frontend.  
+  - GitHub Actions with linting, formatting, and deploy jobs.  
+  - Self-hosted runner on EC2 for CI/CD automation.  
+
+---
+
+## Setup  
+
+### Local (with Docker Compose)  
+```bash
+docker compose up -d --build
+
+docker ps --format "table {{.Names}}\t{{.Ports}}"
+```
+
+### EC2 Deployment (via GitHub Actions runner)
+
+Every push to `main` triggers the deploy workflow and restarts containers on the EC2 instance.
+
+- **Backend →** [http://13.223.221.154:8000/docs](http://13.223.221.154:8000/docs)  
+- **Frontend →** [http://13.223.221.154:8501](http://13.223.221.154:8501)  
+
+---
+
+## API Usage
+
+### Health check
+```bash
+curl http://127.0.0.1:8000/health
+```
+
+### Predict
+
+Send a POST request with JSON input:
+
+```bash
+curl -X POST http://127.0.0.1:8000/predict \
+  -H "Content-Type: application/json" \
+  -d '{
+    "rows": [
+      {"f1": 1.1, "f2": 11, "city": "a"},
+      {"f1": 2.0, "f2": 17, "city": "c"}
+    ]
+  }'
+```
+Responces: {"predictions":[0,1],"n":2}
+
+## Development
+
+Install dependencies locally (if not using Docker):
+
+```bash
+uv sync --all-extras
+```
+Run checks:
+uv run ruff check .
+uv run isort . --profile black
+uv run black . --check
+pytest
+
+## Screenshots
