@@ -11,6 +11,7 @@ MODEL_PATH = os.environ.get("MODEL_PATH", "models/model.joblib")
 
 app = FastAPI(title="MLOps HW2 - Backend", version="0.1.0")
 
+# allow frontend container to call the API
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -19,6 +20,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Load model lazily (first request) so container starts fast.
 _model = None
 
 
