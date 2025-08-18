@@ -168,3 +168,15 @@ uv run black . --check
 pytest
 
 ## Screenshots
+
+### Backend Swagger (`/docs`)
+Here is the automatically generated API documentation from FastAPI:
+
+![Backend Swagger](screenshots/Screenshot%202025-08-18%20121430.png)
+
+---
+
+### Frontend Streamlit
+The Streamlit app allows the user to send inputs and view predictions interactively:
+
+![Frontend Streamlit](screenshots/Screenshot%202025-08-18%20121437.png)
