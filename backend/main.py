@@ -11,11 +11,14 @@ MODEL_PATH = os.environ.get("MODEL_PATH", "models/model.joblib")
 
 # Lazy model loader (so the module can import even if model file is not present yet)
 _model = None
+
+
 def get_model():
     global _model
     if _model is None:
         _model = load(MODEL_PATH)
     return _model
+
 
 app = FastAPI(title="ML Backend")
 
@@ -27,11 +30,13 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+
 # --------- Schemas ---------
 class Row(BaseModel):
     f1: float
     f2: float
     city: Literal["a", "b", "c"]
+
 
 class PredictIn(BaseModel):
     rows: List[Row]
@@ -46,14 +51,19 @@ class PredictIn(BaseModel):
             }
         }
 
+
 class PredictOut(BaseModel):
     predictions: List[int]
     n: int
+
+
 # ---------------------------
+
 
 @app.get("/health")
 def health() -> dict:
     return {"status": "ok"}
+
 
 @app.post("/predict", response_model=PredictOut)
 def predict(body: PredictIn) -> PredictOut:
