@@ -1,0 +1,42 @@
+name: CI/CD
+
+on:
+  push:
+    branches: [ main, hw2, revert-4-hw2 ]
+  pull_request:
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v3
+      - run: uv sync --all-extras
+      - run: uv run ruff check .
+      - run: uv run black . --check
+
+  deploy:
+    needs: lint
+    runs-on: [self-hosted, ec2]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Ensure .env exists
+        run: |
+          [ -f .env ] || cat > .env <<'ENV'
+          MODEL_PATH=models/model.joblib
+          BACKEND_URL=http://backend:8000
+          ENV
+
+      - name: Ensure model file is present
+        run: |
+          mkdir -p models
+          if [ ! -f models/model.joblib ]; then
+            # copy from your persisted model on the EC2 box
+            cp -f ~/ml_ops_project/models/model.joblib models/ || true
+          fi
+
+      - name: Build & restart stack
+        run: |
+          docker compose up -d --build
+          docker ps --format "table {{.Names}}\t{{.Ports}}"
